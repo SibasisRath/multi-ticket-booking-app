@@ -1,8 +1,8 @@
 version: '3'
 services:
-  eureka-server:
-    image: eureka-server:1.0
-    container_name: eureka-server
+  service-registry:
+    image: service-registry:1.0
+    container_name: service-registry
     expose:
     - '8761'
     ports:
@@ -15,9 +15,9 @@ services:
     ports:
     - 8080:8080
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo
     links:
-    - eureka-server
+    - service-registry
   order-service:
     image: order-service:1.0
     container_name: order-service
@@ -26,9 +26,9 @@ services:
     ports:
     - 8040:8040
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka
     links:
-    - eureka-server
+    - service-registry
   hotel-service:
     image: hotel-service:1.0
     container_name: hotel-service
@@ -37,9 +37,9 @@ services:
     ports:
     - 8060:8060
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo
     links:
-    - eureka-server
+    - service-registry
   bus-service:
     image: bus-service:1.0
     container_name: bus-service
@@ -48,9 +48,9 @@ services:
     ports:
     - 8070:8070
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/busservice
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/busservice
     links:
-    - eureka-server
+    - service-registry
   train-service:
     image: train-service:1.0
     container_name: train-service
@@ -59,17 +59,17 @@ services:
     ports:
     - 8050:8050
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/traininfo
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/traininfo
     links:
-    - eureka-server
+    - service-registry
   gateway-api:
     image: gateway-api:1.0
-    container_name: eureka-server
+    container_name: gateway-api
     expose:
     - '9191'
     ports:
     - 9191:9191
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka
+    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka
     links:
-    - eureka-server
+    - service-registry
