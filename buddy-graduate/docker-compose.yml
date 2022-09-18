@@ -1,0 +1,75 @@
+version: '3'
+services:
+  eureka-server:
+    image: eureka-server:1.0
+    container_name: eureka-server
+    expose:
+    - '8761'
+    ports:
+    - 8761:8761
+  user-service:
+    image: user-service:1.0
+    container_name: user-service
+    expose:
+    - '8080'
+    ports:
+    - 8080:8080
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo
+    links:
+    - eureka-server
+  order-service:
+    image: order-service:1.0
+    container_name: order-service
+    expose:
+    - '8040'
+    ports:
+    - 8040:8040
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka
+    links:
+    - eureka-server
+  hotel-service:
+    image: hotel-service:1.0
+    container_name: hotel-service
+    expose:
+    - '8060'
+    ports:
+    - 8060:8060
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo
+    links:
+    - eureka-server
+  bus-service:
+    image: bus-service:1.0
+    container_name: bus-service
+    expose:
+    - '8070'
+    ports:
+    - 8070:8070
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/busservice
+    links:
+    - eureka-server
+  train-service:
+    image: train-service:1.0
+    container_name: train-service
+    expose:
+    - '8050'
+    ports:
+    - 8050:8050
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/traininfo
+    links:
+    - eureka-server
+  gateway-api:
+    image: gateway-api:1.0
+    container_name: eureka-server
+    expose:
+    - '9191'
+    ports:
+    - 9191:9191
+    environment:
+    - JAVA_OPTS= -DEUREKA_SERVER=http://eureka-server:8761/eureka
+    links:
+    - eureka-server

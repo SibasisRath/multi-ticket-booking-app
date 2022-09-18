@@ -1,0 +1,23 @@
+server:
+  port: 8040
+spring:
+  application:
+    name: order-service
+    
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+
+    
+logging:
+  file:
+    name: logs/orderservice.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
