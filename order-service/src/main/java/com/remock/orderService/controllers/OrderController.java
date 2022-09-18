@@ -9,6 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.remock.orderService.services.OrderService;
 
+import io.micrometer.core.annotation.Timed;
+
 @RestController
 public class OrderController {
 	@Autowired
@@ -17,6 +19,7 @@ public class OrderController {
 	RestTemplate restTemplate;
 
 	@GetMapping(path = "/order/{userid}")
+	@Timed(value = "get_order")
 	public Object getOrderDetails(@PathVariable("userid") String userId) {
 		Object bus = restTemplate.getForObject("http://bus-service/bus/bookingslist/" + userId, Object.class);
 		Object train = restTemplate.getForObject("http://train-service/train/getbookingalllist/" + userId,

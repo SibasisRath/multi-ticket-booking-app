@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.remock.hotelService.dtos.HotelBookingsDto;
 import com.remock.hotelService.services.HotelBookingsService;
 
+import io.micrometer.core.annotation.Timed;
+
 @RestController
 public class HotelBookingsController {
 	private static final Logger log = LoggerFactory.getLogger(HotelBookingsController.class);
@@ -23,6 +25,7 @@ public class HotelBookingsController {
 	private HotelBookingsService bookingsService;
 
 	@PostMapping(path = "/hotel/book/{hotel}/{checkindate}/{checkoutdate}/{userid}")
+	@Timed(value = "book_hotel")
 	public Object bookHotel(@PathVariable("hotel") String hotel, @PathVariable("checkindate") Date checkindate,
 			@PathVariable("checkoutdate") Date checkoutdate, @PathVariable("userid") String userId,
 			@RequestBody List<HotelBookingsDto> hotelBookingDtos) {
@@ -32,12 +35,14 @@ public class HotelBookingsController {
 	}
 
 	@GetMapping(path = "/hotel/getbookingdetails/{userid}/{checkindate}")
+	@Timed(value = "get_hotel_booking_details")
 	public Object getBookingDetailsByDate(@PathVariable("userid") String userId,
 			@PathVariable("checkindate") Date checkInDate) {
 		return ResponseEntity.ok(bookingsService.getHotelBookingDetails(userId, checkInDate));
 	}
 
 	@GetMapping(path = "/hotel/getbookingdetailslist/{userid}")
+	@Timed(value = "get_hotel_bookings_list")
 	public Object getBookingDetailsList(@PathVariable("userid") String userId) {
 		return ResponseEntity.ok(bookingsService.getHotelBookingDetailList(userId));
 	}
