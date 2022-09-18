@@ -11,7 +11,7 @@ import com.remock.trainService.entities.Train;
 @Repository
 public interface TrainRepository extends JpaRepository<Train, Integer> {
 
-	@Query(value = "select trainid trainid from Trains where source = ?1 and destination = ?2", nativeQuery = true)
+	@Query(value = "select trainid trainid from trains where source = ?1 and destination = ?2", nativeQuery = true)
 	public List<Integer> checkSourceDestination(String source, String destination);
 
 	@Query(value = "select * from trains where source = ?1 and destination = ?2", nativeQuery = true)

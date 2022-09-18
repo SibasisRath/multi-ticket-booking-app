@@ -3,7 +3,7 @@ pipeline{
     stages{
         stage("checkout"){
             steps{
-                git "https://github.com/SibasisRath/multi-ticket-booking-app.git"
+                git "https://tools.publicis.sapient.com/bitbucket/scm/psimay/shubh-banking-system.git"
             }
         }
         

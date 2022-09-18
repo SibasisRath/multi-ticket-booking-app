@@ -12,8 +12,6 @@ spring:
     url: ${JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo}
     username: ${DB_USER:admin}
     password: ${DB_PASSWOED:welcome1}
-    hikari:
-      maximum-pool-size: 10
     
 eureka:
   client:
