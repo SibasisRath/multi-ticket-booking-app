@@ -1,182 +1,114 @@
-# User Service - Multi-Ticket Booking Application
+# Multi-Ticket Booking Application – Project Overview
 
-## Overview
+This project is a comprehensive **multi-service ticket booking platform** enabling booking and management of Tickets for different modes—Bus, Train, Hotel, and more—built as a distributed microservices ecosystem. Each major capability is implemented as a dedicated microservice, adhering to a modular, scalable, and cloud-friendly architecture.
 
-The **User Service** is a microservice in the multi-ticket booking platform. It manages all user-related functions like registration, login, profile access, and profile updates. Built with **Spring Boot**, it uses **MariaDB** for persistent storage and registers itself with an **Eureka server** for service discovery in a microservices architecture.
+## System Architecture
 
----
+- **Microservices**: Independent Spring Boot services for each business domain (User, Bus, Train, Hotel, Order).
+- **Service Discovery**: Netflix Eureka server used for dynamic discovery and routing of services.
+- **API Gateway**: Centralized entry point providing a unified API, routing requests to underlying microservices.
+- **Data Storage**: Each service manages its own database schema (commonly MariaDB via Spring Data JPA/Hibernate).
+- **Observability**: Logging (log4j2/SLF4J), health and metrics (Micrometer), and central log access patterns built in.
+- **Testing**: Extensive use of JUnit, Mockito for unit and integration testing across all services.
 
-## Features
 
-- **User Registration:** Create a new user with validations for unique phone, user ID, and email.
-- **Login:** Authenticate with user ID and password, returning clear success/failure responses.
-- **Profile Fetching:** Get user details by user ID.
-- **Profile Update:** Update user profile fields, ensuring new values remain unique where required.
-- **RESTful API:** JSON request and response format.
-- **Logging & Monitoring:** Uses SLF4J for operation logs, Micrometer for endpoint timing.
-- **Eureka Integration:** Registers and operates as a discoverable service.
-- **Thorough Testing:** Business logic is covered by JUnit and Mockito-based unit tests.
+## Services Overview
 
----
+| Service | Purpose | Technology Stack |
+| :-- | :-- | :-- |
+| User Service | Manages users (registration, auth, profile, uniqueness) | Spring Boot, MariaDB, Eureka, SLF4J, Micrometer |
+| Bus Service | Handles bus-related catalog, seat management, search, and booking | Spring Boot, MariaDB, Eureka |
+| Train Service | Manages train catalog, schedules, seat logistics, and booking | Spring Boot, MariaDB, Eureka |
+| Hotel Service | Books hotels, handles room availability, and manages hotel partner inventory | Spring Boot, MariaDB, Eureka |
+| Order Service | Co-ordinates multi-modal bookings, payments, order status, transaction history | Spring Boot, MariaDB, Eureka |
+| Gateway API | Aggregates all microservice endpoints and applies API security/routing policies | Spring Cloud Gateway, Eureka |
+| Service Registry | Microservices discovery and registration for load balancing/failover | Spring Cloud Netflix Eureka |
 
-## Technology Stack
+## Key Features (by Service)
 
-| Component         | Details                                    |
-|-------------------|--------------------------------------------|
-| Framework         | Spring Boot                                |
-| Database          | MariaDB (via Spring Data JPA/Hibernate)    |
-| Service Discovery | Netflix Eureka                             |
-| Logging           | SLF4J / log4j2                             |
-| Monitoring        | Micrometer                                 |
-| API Style         | RESTful (JSON)                             |
-| Unit Testing      | JUnit 5, Mockito                           |
+### User Service
 
----
+- **Registration \& Auth**: Secure sign-up with uniqueness checks (phone/email/userId).
+- **Profile Management**: Supports updates and partial updates, uniqueness revalidated.
+- **REST API**: All endpoints JSON-encoded; errors returned consistently; extensive unit/integration tests.
+- **Observation**: Logs all actions, exposes metrics, integrates with Eureka for discovery.
 
-## Configuration
 
-Main settings in `application.yml`:
+### Bus/Train/Hotel Service
 
-- **Port:** 8080
-- **Database:** Connects to MariaDB instance on AWS RDS
-- **JPA:** Schema auto-update enabled
-- **Eureka:** Registers with discovery server
-- **Logging:** File output at `logs/userservice.log`
-- **Management Endpoints:** All exposed for monitoring
+- **Catalog Management**: CRUD APIs for buses/trains/hotels, including schedules, seat/room details.
+- **Booking Workflow**: Manages seat/room availability, processes reservations with transaction safety.
+- **Search**: Endpoints for discovering available buses/trains/hotels for a given location/date/query.
 
----
 
-## Data Models
+### Order Service
 
-### UserEntity
+- **Order Orchestration**: Coordinates booking requests across transportation/hotel services.
+- **Transaction Management**: Ensures atomicity/rollback for multi-step bookings.
+- **Booking History**: Central source for a user's booking records and order statuses.
 
-- `uId` (int): Internal primary key
-- `userId` (String): Unique login/user handle
-- `userFirstName`, `userLastName` (String): Names
-- `phone` (String): Unique phone number
-- `email` (String): Unique email
-- `country`, `state`, `district` (String): Location info
-- `pwd` (String): User password (plain text; should encrypt for production)
 
-### UserEntityDto
+### Gateway API
 
-A data transfer object mirroring UserEntity for API and service-layer communication.
+- **Unified Access**: Routes external API requests to relevant microservices.
+- **Security/Policies**: Centralizes authentication, rate-limiting, CORS, and API documentation.
 
----
 
-## REST API Endpoints
+### Service Registry (Eureka)
 
-| HTTP   | Endpoint              | Description                     | Request Body      | Response                    |
-|--------|-----------------------|---------------------------------|-------------------|-----------------------------|
-| POST   | `/user/add`           | Register a new user             | UserEntityDto     | Status JSON                 |
-| POST   | `/user/login`         | User login (ID + pwd)           | UserEntityDto     | Status JSON                 |
-| GET    | `/user/logout`        | Simulated logout                | -                 | Status JSON                 |
-| GET    | `/user/details/{id}`  | Fetch details by userId         | -                 | User details or status JSON |
-| PUT    | `/user/update/{id}`   | Update user (partial allowed)   | UserEntityDto     | Status JSON                 |
+- **Discovery**: Microservices register/deregister for fault tolerance and horizontal scaling.
+- **Load Balancing**: Dynamically routes requests across multiple instances.
 
----
 
-## Business Logic Details
+## Core Technologies
 
-- **Registration:** Requires unique phone, user ID, and email. All fields except location must be present. Returns a status JSON indicating completion or error.
-- **Login:** Validates existence of user ID and password match. Returns clear status or error.
-- **Profile Fetching:** Looks up user by user ID. Returns details or not-found status.
-- **Profile Update:** Accepts partial data (non-null fields updated). Checks for uniqueness before applying changes.
-- **Error Handling:** Returns specific status messages for all rejections, including duplicate values or missing fields.
+- Spring Boot, Spring Data JPA, Spring Cloud Netflix (Eureka, Gateway)
+- MariaDB (databases for each service)
+- Logging: SLF4J/log4j2
+- Monitoring: Micrometer
+- Build: Maven
+- Testing: JUnit 5, Mockito
+- REST API: JSON over HTTP
 
----
 
-## Testing
+## Running the Project
 
-- **Unit Tests:** Written using JUnit 5 and Mockito (see `UserServiceTest.java`[^1]), covering:
-  - User details retrieval (existence/non-existence)
-  - Login (success/failure, wrong password)
-  - User registration (duplicate checks, fields missing)
-  - Profile updates (partial/full, duplicate value rejection)
+**Requirements:**
 
-- **Integration Test:** App context load is smoke-tested (`UserServiceApplicationTests.java`[^2]).
-
----
-
-## Running the Service
-
-**Prerequisites:**
-
-- Java 11+
-- MariaDB instance running (use values as in `application.yml`[^4])
-- Eureka server (default expected at `http://localhost:8761/eureka/`)
+- Java 11+, Maven, MariaDB instances, Eureka server.
 
 **Steps:**
 
-1. Clone the repository.
-2. Update `application.yml` if your database/Eureka details differ.
-3. Build the project:
-```
+1. Clone this repository.
+2. Set up (or use provided) MariaDB and Eureka server. Update `application.yml` files in each service as needed.
+3. Build all services:
 
+```
 mvn clean install
-
-```
-4. Start the application:
 ```
 
+4. Start each service:
+
+```
 mvn spring-boot:run
-
 ```
-5. Service will be available at `http://localhost:8080/` by default and show up in Eureka.
 
----
+5. Service endpoints default to standard ports (e.g., 8080+) and register with Eureka at `http://localhost:8761/eureka/`.
+6. Use an API gateway as the single entry-point for all requests.
 
-## File Structure Highlights
+## Notable Project Characteristics
 
-| File/Class                | Purpose                                   |
-|---------------------------|-------------------------------------------|
-| UserEntity & UserEntityDto| Data persistence & transfer models       |
-| UserRepository            | JPA interface for DB operations          |
-| UserService               | Business logic, validation, workflows    |
-| UserController            | REST endpoint definitions                |
-| UserServiceTest           | Unit tests for service                   |
-| application.yml           | Central configuration (port, DB, Eureka) |
-| log4j2.xml                | Logging configuration                    |
-| pom.xml                   | Dependency management                    |
+- **Microservice First:** Each domain is autonomous—can be developed, tested, and deployed independently.
+- **Observability:** Extensive logging and monitoring for easy troubleshooting.
+- **Error Handling:** Consistent JSON error/status responses throughout all services.
+- **Security:** While base code demonstrates plain-text password storage, it is noted as a **must-fix** before production (enable password encryption).
+- **Extensibility:** Designed so new service types (e.g., Flight, Cab) can be plugged in with minimal changes to core architecture.
 
----
 
-## Notes
+## Contribution
 
-- **Passwords:** Currently stored as plain text; add encryption before production.
-- **Authentication:** No JWT/session, "logout" is mock only.
-- **Error Messaging:** All API errors and rejections are returned as clear status JSON.
-- **Microservices:** This module is designed to slot into a larger distributed ecosystem.
-
----
+Raise GitHub issues for integration help, bug reports, or feature requests. Contributors are welcome!
 
 ## Contact
 
-For further info or help with integration, raise an issue in the repo or contact the maintainer.
-
-```
-
-<div style="text-align: center">⁂</div>
-
-[^1]: UserServiceTest.java
-
-[^2]: UserServiceApplicationTests.java
-
-[^3]: application.yml
-
-[^4]: log4j2.xml
-
-[^5]: UserServiceApplication.java
-
-[^6]: UserService.java
-
-[^7]: UserRepository.java
-
-[^8]: UserEntity.java
-
-[^9]: UserEntityDto.java
-
-[^10]: UserController.java
-
-[^11]: pom.xml
-
+Refer to service-level READMEs or raise a GitHub issue for contact with the project maintainer.
