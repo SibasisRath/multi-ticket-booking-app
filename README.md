@@ -111,4 +111,4 @@ Raise GitHub issues for integration help, bug reports, or feature requests. Cont
 
 ## Contact
 
-Refer to service-level READMEs or raise a GitHub issue for contact with the project maintainer.
+sibasisrath2000@gmail.com
