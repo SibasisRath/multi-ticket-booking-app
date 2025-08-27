@@ -1,75 +1,100 @@
-version: '3'
+version: '3.8'
 services:
+  # Eureka server
   service-registry:
     image: service-registry:1.0
     container_name: service-registry
     expose:
     - '8761'
     ports:
-    - 8761:8761
+    - "8761:8761"
+
+  # User Service
   user-service:
     image: user-service:1.0
     container_name: user-service
     expose:
     - '8080'
     ports:
-    - 8080:8080
+    - "8080:8080"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka -DJDBC_URL=jdbc:mariadb://host.docker.internal:3306/userinfo -DDB_USER=root -DDB_PASSWORD=password"
+      #JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     links:
     - service-registry
+
+  # Order Service
   order-service:
     image: order-service:1.0
     container_name: order-service
     expose:
     - '8040'
     ports:
-    - 8040:8040
+    - "8040:8040"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka"
     links:
     - service-registry
+
+  # Hotel Service
   hotel-service:
     image: hotel-service:1.0
     container_name: hotel-service
     expose:
     - '8060'
     ports:
-    - 8060:8060
+    - "8060:8060"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka -DJDBC_URL=jdbc:mariadb://host.docker.internal:3306/hotelinfo -DDB_USER=root -DDB_PASSWORD=password"
+      # JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/hotelsinfo"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     links:
     - service-registry
+
+  #Bus Service
   bus-service:
     image: bus-service:1.0
     container_name: bus-service
     expose:
     - '8070'
     ports:
-    - 8070:8070
+    - "8070:8070"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/busservice
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka -DJDBC_URL=jdbc:mariadb://host.docker.internal:3306/businfo -DDB_USER=root -DDB_PASSWORD=password"
+      # JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/busservice"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     links:
     - service-registry
+
+  # Train Service
   train-service:
     image: train-service:1.0
     container_name: train-service
     expose:
     - '8050'
     ports:
-    - 8050:8050
+    - "8050:8050"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/traininfo
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka -DJDBC_URL=jdbc:mariadb://host.docker.internal:3306/traininfo -DDB_USER=root -DDB_PASSWORD=password"
+      # JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka  -DDB_USER=admin -DDB_PASSWORD=welcome1 -DJDBC_URL=jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/traininfo"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     links:
     - service-registry
+
+  # Gateway API
   gateway-api:
     image: gateway-api:1.0
     container_name: gateway-api
     expose:
     - '9191'
     ports:
-    - 9191:9191
+    - "9191:9191"
     environment:
-    - JAVA_OPTS= -DEUREKA_SERVER=http://service-registry:8761/eureka
+      JAVA_OPTS: "-DEUREKA_SERVER=http://service-registry:8761/eureka"
     links:
     - service-registry
