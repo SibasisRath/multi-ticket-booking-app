@@ -5,19 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import com.remock.userService.dto.UserEntityDto;
 import com.remock.userService.services.UserService;
 
 import io.micrometer.core.annotation.Timed;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+
 @RestController
+@RequestMapping("/user")
+@Validated
 public class UserController {
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 	@Autowired
@@ -25,7 +26,8 @@ public class UserController {
 
 	@PostMapping(path = "/user/add", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed(value = "add_user")
-	public ResponseEntity<String> addUser(@RequestBody UserEntityDto dto) {
+    // we can add a user login dto.
+	public ResponseEntity<String> addUser(@Valid @RequestBody UserEntityDto dto) {
 		log.info("Inside the add user controller.");
 		return ResponseEntity.ok(userService.addingUser(dto));
  
@@ -47,7 +49,7 @@ public class UserController {
 
 	@GetMapping(path = "/user/details/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Timed(value = "get_user_details")
-	public Object getDetails(@PathVariable("id") String id) {
+	public ResponseEntity<?> getDetails(@PathVariable("id") @NotBlank String id) {
 		return ResponseEntity.ok(userService.gettingDetails(id));
 	}
 

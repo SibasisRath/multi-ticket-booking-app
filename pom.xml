@@ -25,5 +25,6 @@
 		<module>train-service</module>
 		<module>hotel-service</module>
 		<module>order-service</module>
-	</modules>
+        <module>remock-commons</module>
+    </modules>
 </project>

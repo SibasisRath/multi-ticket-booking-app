@@ -23,7 +23,7 @@ public class DetailsController {
 	@Timed(value = "source_destination_search")
 	public Object getDetails(@PathVariable("source") String source, @PathVariable("destination") String destination) {
 		log.info("inside get details by source and destination controller.");
-		return ResponseEntity.ok(detailsService.getingDetails(source, destination));
+		return ResponseEntity.ok(detailsService.gettingDetails(source, destination));
 
 	}
 }

@@ -1,6 +1,6 @@
 package com.remock.busService.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "bookings")
@@ -16,7 +18,8 @@ public class Bookings {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "busbookingid")
 	private int busBookingId;
-	@Column(name = "userid")
+	@Column(name = "userid", nullable = false)
+    @NotBlank
 	private String userId;
 	@Column(name = "bus")
 	private String bus;
@@ -29,10 +32,11 @@ public class Bookings {
 	@Column(name = "droppingpoint")
 	private String dpoint;
 	@Column(name = "datefrom")
-	private Date dateFrom;
+	private LocalDate dateFrom;
 	@Column(name = "returndate")
-	private Date returnDate;
-	@Column(name = "seats")
+	private LocalDate returnDate;
+	@Column(name = "seats", nullable = false)
+    @Min(1)
 	private int seats;
 
 	public Bookings() {
@@ -40,7 +44,7 @@ public class Bookings {
 	}
 
 	public Bookings(int busBookingId, String userId, String bus, String source, String destination, String bpoint,
-			String dpoint, Date dateFrom, Date returnDate, int seats) {
+			String dpoint, LocalDate dateFrom, LocalDate returnDate, int seats) {
 		this.busBookingId = busBookingId;
 		this.userId = userId;
 		this.bus = bus;
@@ -111,19 +115,19 @@ public class Bookings {
 		this.dpoint = dpoint;
 	}
 
-	public Date getDateFrom() {
+	public LocalDate getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(LocalDate dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public Date getReturnDate() {
+	public LocalDate getReturnDate() {
 		return returnDate;
 	}
 
-	public void setReturnDate(Date returnDate) {
+	public void setReturnDate(LocalDate returnDate) {
 		this.returnDate = returnDate;
 	}
 

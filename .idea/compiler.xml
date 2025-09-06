@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="train-service" />
+        <module name="remock-commons" />
         <module name="gateway-api" />
         <module name="bus-service" />
         <module name="order-service" />
@@ -22,6 +23,7 @@
       <module name="gateway-api" options="-parameters" />
       <module name="hotel-service" options="-parameters" />
       <module name="order-service" options="-parameters" />
+      <module name="remock-commons" options="-parameters" />
       <module name="service-registry" options="-parameters" />
       <module name="train-service" options="-parameters" />
       <module name="user-service" options="-parameters" />

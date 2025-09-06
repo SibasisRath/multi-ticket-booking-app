@@ -43,7 +43,7 @@ public class TrainBookingController {
 
 	}
 
-	@GetMapping(path = "/train/getbookingalllist/{userid}")
+	@GetMapping(path = "/train/getbookinglist/{userid}")
 	@Timed(value = "get_train_booking_list")
 	public Object getBookingAllList(@PathVariable("userid") String userId) {
 		log.info("inside get booking list controller.");

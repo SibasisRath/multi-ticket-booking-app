@@ -1,13 +1,14 @@
 package com.remock.busService.services;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.web.client.RestTemplate;
 
 import com.remock.busService.dtos.BookingsDto;
 import com.remock.busService.entities.Bookings;
@@ -17,13 +18,15 @@ import com.remock.busService.repositories.BookingsRepository;
 import com.remock.busService.repositories.BusSourceDestinationRepository;
 import com.remock.busService.repositories.BusStopsRepository;
 import com.remock.busService.repositories.BusVacancyRepository;
+import javax.persistence.OptimisticLockException;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 @Service
 public class BookingsService {
 	private static final Logger log = LoggerFactory.getLogger(BookingsService.class);
 	BookingsRepository bookingRepository;
 	BusVacancyRepository busVacancyRepository;
-	RestTemplate restTemplate;
+	//RestTemplate restTemplate;
 	BusStopsRepository busStopsRepository;
 	BusSourceDestinationRepository busSourceDestinationRepository;
 
@@ -35,6 +38,8 @@ public class BookingsService {
 		this.busStopsRepository = busStopsRepository;
 	}
 
+    // check transactional
+    @Transactional
 	public String bookingTickets(BookingsDto dto) {
 		log.info("inside book ticket controller.");
 		Bookings bookings = new Bookings();
@@ -56,13 +61,15 @@ public class BookingsService {
 		if (dto.getDpoint() == null) {
 			return ("{\"status\":\"enter dropping point.\"}");
 		}
-		if (dto.getSeats() == 0) {
+		if (dto.getSeats() <= 0) {
 			return ("{\"status\":\"enter seats.\"}");
 		}
 		if ((busVacancyRepository.checkBusVacancy(dto.getBus())) < dto.getSeats()) {
 			return ("{\"status\":\"This bus does not have enough vacancy.\"}");
 		}
-		busStopList = busStopsRepository.findBusStops(dto.getBus());
+		// busStopList = busStopsRepository.findBusStops(dto.getBus());
+        // solving n+1 problem
+        busStopList = busStopsRepository.findBusStops(dto.getBus());
 		if (!(busStopList.contains(dto.getBpoint()))) {
 			return ("{\"status\":\"This boarding point is not covered by this bus.\"}");
 		}
@@ -81,41 +88,59 @@ public class BookingsService {
 		 * }
 		 */ else {
 
-			bookings.setUserId(dto.getUserId());
-			bookings.setBpoint(dto.getBpoint());
-			bookings.setBus(dto.getBus());
-			bookings.setDateFrom(dto.getDateFrom());
-			bookings.setDpoint(dto.getDpoint());
-			int busSD = busStopsRepository.getBusSD(bookings.getBpoint(), bookings.getBus());
-			BusSourceDestination busSourceDestination = busSourceDestinationRepository.getBusSourceDestination(busSD);
-			bookings.setSource(busSourceDestination.getSource());
-			bookings.setDestination(busSourceDestination.getDestination());
-			Date returnDate = busStopsRepository.getDate(bookings.getBus(), bookings.getDpoint());
-			bookings.setReturnDate(returnDate);
-			bookings.setSeats(dto.getSeats());
+            bookings.setUserId(dto.getUserId());
+            bookings.setBpoint(dto.getBpoint());
+            bookings.setBus(dto.getBus());
+            bookings.setDateFrom(dto.getDateFrom());
+            bookings.setDpoint(dto.getDpoint());
+            int busSD = busStopsRepository.getBusSD(bookings.getBpoint(), bookings.getBus());
+            BusSourceDestination busSourceDestination = busSourceDestinationRepository.getBusSourceDestination(busSD);
+            bookings.setSource(busSourceDestination.getSource());
+            bookings.setDestination(busSourceDestination.getDestination());
+            LocalDate returnDate = busStopsRepository.getDate(bookings.getBus(), bookings.getDpoint());
+            bookings.setReturnDate(returnDate);
+            bookings.setSeats(dto.getSeats());
 
-			bookingRepository.save(bookings);
-			busv = busVacancyRepository.getByBus(bookings.getBus());
-			busv.setVacancy(busv.getVacancy() - bookings.getSeats());
-			busVacancyRepository.save(busv);
-			log.info("Bus vacancy seats are updated.");
-			return ("{\"status\": \"bus booked.\"}");
-		}
+            // mannual retry
+            // Retryable can add
+            String status = null;
+            for (int attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    bookingRepository.save(bookings);
+                    busv = busVacancyRepository.getByBus(bookings.getBus());
+                    if (busv.getVacancy() < bookings.getSeats()) {
+                        throw new IllegalStateException("Not enough seats");
+                    }
+                    busv.setVacancy(busv.getVacancy() - bookings.getSeats());
+                    busVacancyRepository.save(busv);
 
-	}
+                    status = "{\"status\": \"bus booked.\"}";
+                    break; // exit loop, no early return
+                } catch (OptimisticLockingFailureException | OptimisticLockException e) {
+                    if (attempt == 3) {
+                        status = "{\"status\":\"Seats changed due to concurrent booking. Please try again.\"}";
+                        // fall through to end of loop; the for-condition can now become false
+                    }
+                    // otherwise, next iteration
+                }
+            }
+            return status;
+        }
 
-	public Object gettingBookedDetails(String userId, Date dateFrom) {
+        }
+
+	public Object gettingBookedDetails(String userId, LocalDate dateFrom) {
 		log.info("inside get booking details controller.");
-		if (bookingRepository.findByBus(userId, dateFrom) == null) {
+		if (bookingRepository.findByUserIdAndDateFrom(userId, dateFrom).isEmpty()) {
 			return ("{\"status\": \"check inputs.\"}");
 		} else {
-			return (bookingRepository.findByBus(userId, dateFrom));
+			return (bookingRepository.findByUserIdAndDateFrom(userId, dateFrom));
 		}
 	}
 
 	public Object gettingBusBookingList(String id) {
 		log.info("inside get user list of booked ticket controllers controller.");
-		if (bookingRepository.findByUserId(id).size() == 0) {
+		if (bookingRepository.findByUserId(id).isEmpty()) {
 			return ("{\"status\": \"No tickets has been booked in this user id.\"}");
 		} else {
 			return (bookingRepository.findByUserId(id));

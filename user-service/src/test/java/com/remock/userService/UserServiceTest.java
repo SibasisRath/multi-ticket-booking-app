@@ -1,16 +1,15 @@
 package com.remock.userService;
 
+import com.remock.userService.entities.UserEntity;
+import com.remock.userService.repositories.UserRepository;
+import com.remock.userService.services.UserService;
+import com.remock.userService.dto.UserEntityDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
-
-import com.remock.userService.dto.UserEntityDto;
-import com.remock.userService.entities.UserEntity;
-import com.remock.userService.repositories.UserRepository;
-import com.remock.userService.services.UserService;
 
 public class UserServiceTest {
 	UserRepository userRepository;

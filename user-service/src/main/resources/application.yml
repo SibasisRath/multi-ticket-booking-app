@@ -9,27 +9,30 @@ spring:
       ddl-auto: update
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-#    url: ${JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo}
-#    username: ${DB_USER:admin}
-#    password: ${DB_PASSWORD:welcome1}
+    #    url: ${JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo}
+    #    username: ${DB_USER:admin}
+    #    password: ${DB_PASSWORD:welcome1}
     url: ${JDBC_URL:jdbc:mariadb://localhost:3306/userinfo}
     username: ${DB_USER:root}
     password: ${DB_PASSWORD:password}
-    
+
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+    hostname: localhost
+    instance-id: ${spring.application.name}:${server.port}
 #  instance:
 #    instance-id: ${spring.application.name}:${spring.cloud.client.hostname}:${server.port}:${random.uuid}
 #    prefer-ip-address: true
-
 logging:
   file:
     name: logs/userservice.log
-    
+
 management:
   endpoints:
     web:

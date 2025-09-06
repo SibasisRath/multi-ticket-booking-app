@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import com.remock.busService.entities.BusVacancy;
 
 @Repository
-public interface BusVacancyRepository extends JpaRepository<BusVacancy, Integer> {
+public interface BusVacancyRepository extends JpaRepository<BusVacancy, String> {
 
 	@Query(value = "select vacancy vacancy from busvacancy where bus = ?1", nativeQuery = true)
 	int checkBusVacancy(String bus);

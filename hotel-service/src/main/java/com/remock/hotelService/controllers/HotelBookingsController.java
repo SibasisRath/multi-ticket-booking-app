@@ -24,6 +24,7 @@ public class HotelBookingsController {
 	@Autowired
 	private HotelBookingsService bookingsService;
 
+    // change
 	@PostMapping(path = "/hotel/book/{hotel}/{checkindate}/{checkoutdate}/{userid}")
 	@Timed(value = "book_hotel")
 	public Object bookHotel(@PathVariable("hotel") String hotel, @PathVariable("checkindate") Date checkindate,

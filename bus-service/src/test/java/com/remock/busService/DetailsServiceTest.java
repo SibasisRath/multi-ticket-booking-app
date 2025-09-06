@@ -29,7 +29,7 @@ public class DetailsServiceTest {
 		BDDMockito.given(busSourceDestinationRepository.findBySD(busSourceDestination.getSource(),
 				busSourceDestination.getDestination())).willReturn(busSourceDestination);
 		
-		Object busDetails = detailsService.getingDetails(busSourceDestination.getSource(),
+		Object busDetails = detailsService.gettingDetails(busSourceDestination.getSource(),
 				busSourceDestination.getDestination());
 		
 		Assertions.assertThat(busDetails).isNotNull();
@@ -43,7 +43,7 @@ public class DetailsServiceTest {
 		BDDMockito.given(busSourceDestinationRepository.findBySD(busSourceDestination.getSource(),
 				busSourceDestination.getDestination())).willReturn(busSourceDestination);
 		
-		Object busDetails = detailsService.getingDetails(busSourceDestination.getSource(),
+		Object busDetails = detailsService.gettingDetails(busSourceDestination.getSource(),
 				null);
 		
 		Assertions.assertThat(busDetails).isNotNull();

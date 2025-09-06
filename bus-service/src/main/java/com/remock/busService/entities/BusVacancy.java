@@ -1,5 +1,7 @@
 package com.remock.busService.entities;
 
+import org.springframework.data.annotation.Version;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,6 +13,9 @@ public class BusVacancy {
 	@Id
 	@Column(name = "bus")
 	private String bus;
+    @Version
+    @Column(name = "version")
+    private Long version; // add this column in the DB if DDL auto is off but here DDL is on.
 	@Column(name = "vacancy")
 	private int vacancy;
 	

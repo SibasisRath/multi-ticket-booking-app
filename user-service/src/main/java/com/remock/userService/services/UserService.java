@@ -8,17 +8,21 @@ import com.remock.userService.dto.UserEntityDto;
 import com.remock.userService.entities.UserEntity;
 import com.remock.userService.repositories.UserRepository;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserService {
 	private static final Logger log = LoggerFactory.getLogger(UserService.class);
 	// @Autowired
 	UserRepository repository;
- 
+
 	public UserService(UserRepository userRepository) {
 		this.repository = userRepository;
-	}
+    }
 
 	public String addingUser(UserEntityDto dto) {
+
 		log.info("Inside the add user service method.");
 		UserEntity entity = new UserEntity();
 		if (dto.getPhone()==null) {

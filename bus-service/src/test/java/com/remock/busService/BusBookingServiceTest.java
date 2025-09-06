@@ -1,6 +1,6 @@
 package com.remock.busService;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,12 +71,12 @@ public class BusBookingServiceTest {
 	@DisplayName("testing get bus booking details service.")
 	@Test
 	void testGettingBookedDetails() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022,10,12),
+                LocalDate.of(2022,10,14), 3);
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		BDDMockito.given(bookingsRepository.findByBus(booking.getUserId(), booking.getDateFrom())).willReturn(bookings);
+		BDDMockito.given(bookingsRepository.findByUserIdAndDateFrom(booking.getUserId(), booking.getDateFrom())).willReturn(bookings);
 
 		Object busBookingDetails = bookingsService.gettingBookedDetails(booking.getUserId(), booking.getDateFrom());
 
@@ -86,12 +86,12 @@ public class BusBookingServiceTest {
 	@DisplayName("testing get bus booking details1 service.")
 	@Test
 	void testGettingBookedDetails1() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		BDDMockito.given(bookingsRepository.findByBus("lsls", booking.getDateFrom())).willReturn(null);
+		BDDMockito.given(bookingsRepository.findByUserIdAndDateFrom("lsls", booking.getDateFrom())).willReturn(null);
 
 		Object busBookingDetails = bookingsService.gettingBookedDetails("lsls", booking.getDateFrom());
 
@@ -101,13 +101,13 @@ public class BusBookingServiceTest {
 	@DisplayName("testing book bus tickets service.")
 	@Test
 	void testBookingTickets() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto(1, null, "bus1", "puri", "bbsr",
-				"stop1", "stop3", Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 1));
+		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto( null, "bus1", "puri", "bbsr",
+				"stop1", "stop3", LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 1));
 
 		Assertions.assertThat(busBookingDetails).isNotNull();
 	}
@@ -115,13 +115,13 @@ public class BusBookingServiceTest {
 	@DisplayName("testing book bus tickets service1.")
 	@Test
 	void testBookingTickets1() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto(1, "user", "bus1", "puri", "bbsr",
-				null, "stop3", Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 1));
+		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto("user", "bus1", "puri", "bbsr",
+				null, "stop3", LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 1));
 
 		Assertions.assertThat(busBookingDetails).isNotNull();
 	}
@@ -129,13 +129,13 @@ public class BusBookingServiceTest {
 	@DisplayName("testing book bus tickets service2.")
 	@Test
 	void testBookingTickets2() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto(1, "user", null, "puri", "bbsr",
-				"stop1", "stop3", Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 1));
+		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto("user", null, "puri", "bbsr",
+				"stop1", "stop3", LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 1));
 
 		Assertions.assertThat(busBookingDetails).isNotNull();
 	}
@@ -143,14 +143,14 @@ public class BusBookingServiceTest {
 	@DisplayName("testing book bus tickets service3.")
 	@Test
 	void testBookingTickets3() throws Exception {
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
 
-		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto(1, "user", "bus1", "puri", "bbsr",
-				"stop1", "stop3", null, Date.valueOf("2022-10-14"), 1));
+		Object busBookingDetails = bookingsService.bookingTickets(new BookingsDto("user", "bus1", "puri", "bbsr",
+				"stop1", "stop3", null, LocalDate.of(2022, 10, 14), 1));
 
 		Assertions.assertThat(busBookingDetails).isNotNull();
 	}
@@ -159,10 +159,10 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets5() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", null,
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 1);
-		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", Date.valueOf("2022-10-12"),
-				Date.valueOf("2022-10-14"), 3);
+		BookingsDto bookingsDto = new BookingsDto("user", "bus1", "puri", "bbsr", "stop1", null,
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 1);
+		Bookings booking = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3", LocalDate.of(2022, 10, 12),
+                LocalDate.of(2022, 10, 14), 3);
 
 		List<Bookings> bookings = new ArrayList<>();
 		bookings.add(booking);
@@ -176,8 +176,8 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets4() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 0);
+		BookingsDto bookingsDto = new BookingsDto("user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 0);
 
 		Object busBookingDetails = bookingsService.bookingTickets(bookingsDto);
 
@@ -188,8 +188,8 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets6() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
+		BookingsDto bookingsDto = new BookingsDto( "user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
 		BDDMockito.given(busVacancyRepository.checkBusVacancy(bookingsDto.getBus())).willReturn(2);
 
 		Object busBookingDetails = bookingsService.bookingTickets(bookingsDto);
@@ -201,9 +201,9 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets7() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
-		BusStops busStops = new BusStops(1, "bus1", "stop1", "puri", Date.valueOf("2022-10-21"));
+		BookingsDto bookingsDto = new BookingsDto( "user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
+		BusStops busStops = new BusStops(1, "bus1", "stop1", "puri", LocalDate.of(2022, 10, 12));
 
 		BDDMockito.given(busVacancyRepository.checkBusVacancy(bookingsDto.getBus())).willReturn(20);
 		BDDMockito.given(busStopsRepository.getDate(bookingsDto.getBus(), bookingsDto.getBpoint()))
@@ -218,9 +218,9 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets8() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
-		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", Date.valueOf("2022-10-12"));
+		BookingsDto bookingsDto = new BookingsDto("user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
+		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", LocalDate.of(2022, 10, 12));
 		List<String> busStops = new ArrayList<>();
 		busStops.add("a");
 
@@ -238,9 +238,9 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets9() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
-		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", Date.valueOf("2022-10-12"));
+		BookingsDto bookingsDto = new BookingsDto("user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
+		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", LocalDate.of(2022, 10, 14));
 		List<String> busStops = new ArrayList<>();
 		busStops.add("stop1");
 
@@ -258,9 +258,9 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets10() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
-		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", Date.valueOf("2022-10-12"));
+		BookingsDto bookingsDto = new BookingsDto( "user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
+		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", LocalDate.of(2022, 10, 14));
 		List<String> busStops = new ArrayList<>();
 		busStops.add("stop3");
 		busStops.add("stop1");
@@ -279,11 +279,11 @@ public class BusBookingServiceTest {
 
 	@Test
 	void testBookingTickets11() throws Exception {
-		BookingsDto bookingsDto = new BookingsDto(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
+		BookingsDto bookingsDto = new BookingsDto( "user", "bus1", "puri", "bbsr", "stop1", "stop3",
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
 		Bookings bookings = new Bookings(1, "user", "bus1", "puri", "bbsr", "stop1", "stop3",
-				Date.valueOf("2022-10-12"), Date.valueOf("2022-10-14"), 3);
-		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", Date.valueOf("2022-10-12"));
+                LocalDate.of(2022, 10, 12), LocalDate.of(2022, 10, 14), 3);
+		BusStops busStop = new BusStops(1, "bus1", "stop1", "puri", LocalDate.of(2022, 10, 12));
 		List<String> busStops = new ArrayList<>();
 		busStops.add("stop1");
 		busStops.add("stop3");
@@ -298,7 +298,7 @@ public class BusBookingServiceTest {
 		BDDMockito.given(busStopsRepository.getBusSD(bookingsDto.getBpoint(), bookingsDto.getBus())).willReturn(1);
 		BDDMockito.given(busSourceDestinationRepository.getBusSourceDestination(1)).willReturn(busSourceDestination);
 		BDDMockito.given(busStopsRepository.getDate(bookingsDto.getBus(), bookingsDto.getDpoint()))
-				.willReturn(Date.valueOf("2022-10-14"));
+				.willReturn(LocalDate.of(2022,10,14));
 		BDDMockito.given(bookingsRepository.save(bookings)).willReturn(bookings);
 		BDDMockito.given(busVacancyRepository.getByBus(bookings.getBus())).willReturn(busVacancy);
 		busVacancy.setVacancy(busVacancy.getVacancy() - bookingsDto.getSeats());

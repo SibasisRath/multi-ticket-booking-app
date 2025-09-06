@@ -15,7 +15,7 @@ public class DetailsService {
 		this.busSourceDestinationRepository = busSourceDestinationRepository2;
 	}
 
-	public Object getingDetails(String source, String destination) {
+	public Object gettingDetails(String source, String destination) {
 		log.info("inside getting details service class method.");
 		if (busSourceDestinationRepository.findBySD(source, destination) == null) {
 			return ("{\"status\":\"entered source and destination does not exist in this service.\"}");

@@ -1,6 +1,6 @@
 package com.remock.busService.entities;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Future;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,7 +25,8 @@ public class BusStops {
 	@Column(name = "city")
 	private String city;
 	@Column(name = "date")
-	private Date date;
+    @Future(message = "End date must be in the future")
+	private LocalDate date;
 	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name = "busSD")
@@ -34,7 +36,7 @@ public class BusStops {
 
 	}
 
-	public BusStops(int stopId, String bus, String busStop, String city, Date date) {
+	public BusStops(int stopId, String bus, String busStop, String city, LocalDate date) {
 		this.stopId = stopId;
 		this.bus = bus;
 		this.busStop = busStop;
@@ -74,11 +76,11 @@ public class BusStops {
 		this.city = city;
 	}
 
-	public Date getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(LocalDate date) {
 		this.date = date;
 	}
 

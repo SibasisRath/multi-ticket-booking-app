@@ -1,6 +1,6 @@
 package com.remock.busService.dtos;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class BookingsDto {
 	private int busBookingId;
@@ -10,17 +10,16 @@ public class BookingsDto {
 	private String destination;
 	private String bpoint;
 	private String dpoint;
-	private Date dateFrom;
-	private Date returnDate;
+	private LocalDate dateFrom;
+	private LocalDate returnDate;
 	private int seats;
 
 	public BookingsDto() {
 
 	}
 
-	public BookingsDto(int busBookingId, String userId, String bus, String source, String destination, String bpoint,
-			String dpoint, Date dateFrom, Date returnDate, int seats) {
-		this.busBookingId = busBookingId;
+	public BookingsDto(String userId, String bus, String source, String destination, String bpoint,
+			String dpoint, LocalDate dateFrom, LocalDate returnDate, int seats) {
 		this.userId = userId;
 		this.bus = bus;
 		this.source = source;
@@ -32,20 +31,8 @@ public class BookingsDto {
 		this.seats = seats;
 	}
 
-	public int getBusBookingId() {
-		return busBookingId;
-	}
-
-	public void setBusBookingId(int busBookingId) {
-		this.busBookingId = busBookingId;
-	}
-
 	public String getUserId() {
 		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getBus() {
@@ -88,19 +75,19 @@ public class BookingsDto {
 		this.dpoint = dpoint;
 	}
 
-	public Date getDateFrom() {
+	public LocalDate getDateFrom() {
 		return dateFrom;
 	}
 
-	public void setDateFrom(Date dateFrom) {
+	public void setDateFrom(LocalDate dateFrom) {
 		this.dateFrom = dateFrom;
 	}
 
-	public Date getReturnDate() {
+	public LocalDate getReturnDate() {
 		return returnDate;
 	}
 
-	public void setReturnDate(Date returnDate) {
+	public void setReturnDate(LocalDate returnDate) {
 		this.returnDate = returnDate;
 	}
 
