@@ -1,0 +1,7 @@
+com.remock.commons.config
+com.remock.commons.dto
+com.remock.commons.entities
+com.remock.commons.exceptions
+com.remock.commons.security
+com.remock.commons.utils
+com.remock.commons.validation

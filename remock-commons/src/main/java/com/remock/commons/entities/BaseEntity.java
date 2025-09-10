@@ -19,13 +19,22 @@ public abstract class BaseEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive = true;
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private Boolean isActive = Boolean.TRUE;  // Explicit TRUE instead of true
+
+    // Default constructor - IMPORTANT!
+    public BaseEntity() {
+        this.isActive = Boolean.TRUE;  // Set default in constructor
+    }
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        // Ensure isActive is set
+        if (isActive == null) {
+            isActive = Boolean.TRUE;
+        }
     }
 
     @PreUpdate

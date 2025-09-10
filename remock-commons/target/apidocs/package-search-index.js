@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.remock.commons.config"},{"l":"com.remock.commons.dto"},{"l":"com.remock.commons.entities"},{"l":"com.remock.commons.exceptions"},{"l":"com.remock.commons.security"},{"l":"com.remock.commons.utils"},{"l":"com.remock.commons.validation"}];updateSearchResults();

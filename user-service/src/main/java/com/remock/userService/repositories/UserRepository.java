@@ -1,23 +1,46 @@
 package com.remock.userService.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.remock.userService.entities.UserEntity;
 
+import java.util.Optional;
+
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Integer>{
+public interface UserRepository extends JpaRepository<UserEntity, Long>{
 
-	public boolean existsByphone(String phoneDto);
+    boolean existsByPhone(String phone);
 
-	public UserEntity findByPhone(String phoneDto);
+    boolean existsByEmail(String email);
 
-	public boolean existsByUserId(String userId);
+    boolean existsByUserId(String userId);
 
-	public boolean existsByUserFirstName(String string);
+//    Optional<UserEntity> findByUserId(String userId);
+//
+//    Optional<UserEntity> findByPhone(String phone);
+//
+//    Optional<UserEntity> findByEmail(String email);
 
-	public UserEntity findByUserId(String id);
+    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId")
+    Optional<UserEntity> findUserByUserId(@Param("userId") String userId);
 
-	public boolean existsByEmail(String email);
+    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId AND u.isActive = true")
+    Optional<UserEntity> findActiveUserByUserId(@Param("userId") String userId);
+
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.isActive = true WHERE u.userId = :userId")
+    int activateUser(@Param("userId") String userId);
+
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.isActive = false WHERE u.userId = :userId")
+    int deactivateUser(@Param("userId") String userId);
+
+    @Modifying
+    @Query("DELETE FROM UserEntity u WHERE u.userId = :userId")
+    void deleteUser(@Param("userId") String userId);
 
 }
