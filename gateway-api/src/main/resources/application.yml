@@ -29,7 +29,10 @@ spring:
         - id: USER-SERVICE
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/user/**
+            - Path=/api/v1/user/**
+#            - Path=/api/v2/user/**
+#          filters:
+#            - RewritePath=/user/(?<segment>.*),/api/v1/user/${segment}
                 
 eureka:
   client:

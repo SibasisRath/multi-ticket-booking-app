@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
 @RestController
-@RequestMapping("/user")
+// @RequestMapping("/user")
 @Validated
 @Tag(name = "User Management", description = "APIs for user registration, authentication and profile management")
 public class UserController {
@@ -33,7 +33,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/add",
+    @PostMapping(value = "api/v1/user/add",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "add_user", description = "Time taken to add a user")
@@ -46,7 +46,11 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping(value = "/login",
+    // notes for versions
+    // create another method with v2 added to the name
+    // regex solution for uri path versions
+    // we can only produce in v2
+    @PostMapping(value = "api/v1/user/login",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "user_login", description = "Time taken for user login")
@@ -59,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping(value = "/logout/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "api/v1/user/logout/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "user_logout", description = "Time taken for user logout")
     @Operation(summary = "User logout", description = "Logs out the current user session")
     public ResponseEntity<ApiResponse<String>> logout(@PathVariable("userId") @NotBlank String userId) {
@@ -68,7 +72,7 @@ public class UserController {
         return ResponseEntity.ok(response) ;
     }
 
-    @GetMapping(value = "/details/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "api/v1/user/details/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "get_user_details", description = "Time taken to get user details")
     @Operation(summary = "Get user details", description = "Retrieves detailed information about a specific user")
     public ResponseEntity<ApiResponse<UserResponseDto>> getUserDetails(
@@ -79,7 +83,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping(value = "/update/{userId}",
+    @PutMapping(value = "api/v1/user/update/{userId}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "update_user", description = "Time taken to update user")
@@ -93,7 +97,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping(value = "/deactivate/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "api/v1/user/deactivate/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed(value = "deactivate_user", description = "Time taken to deactivate user")
     @Operation(summary = "Deactivate user", description = "Deactivates a user account (soft delete)")
     public ResponseEntity<ApiResponse<String>> deactivateUser(

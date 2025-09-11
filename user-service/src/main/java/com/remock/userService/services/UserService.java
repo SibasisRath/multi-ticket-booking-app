@@ -3,6 +3,7 @@ package com.remock.userService.services;
 import com.remock.commons.dto.ApiResponse;
 import com.remock.commons.exceptions.DuplicateResourceException;
 import com.remock.commons.exceptions.ResourceNotFoundException;
+import com.remock.commons.security.CommonSecurityConfig;
 import com.remock.commons.utils.Constants;
 import com.remock.userService.dto.UserResponseDto;
 import com.remock.userService.utils.UserMapper;
@@ -50,16 +51,15 @@ public class UserService {
     public ApiResponse<String> authenticateUser(UserEntityDto dto) {
         log.info("Authenticating user: {}", dto.getUserId());
 
-        UserEntity user = repository.findUserByUserId(dto.getUserId())
+//        UserEntity user = repository.findUserByUserId(dto.getUserId())
+//                .orElseThrow(() -> new ResourceNotFoundException("User", dto.getUserId()));
+
+        UserEntity user = repository.findByUserId(dto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", dto.getUserId()));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             log.warn("Invalid password attempt for user: {}", dto.getUserId());
             throw new ResourceNotFoundException("Invalid credentials");
-        }
-        int updatedRows = repository.activateUser(user.getUserId());
-        if (updatedRows == 0) {
-            throw new ResourceNotFoundException("User", user.getUserId());
         }
         log.info("User authenticated successfully: {}", dto.getUserId());
         return ApiResponse.success("Login successful");
@@ -69,7 +69,7 @@ public class UserService {
     public ApiResponse<UserResponseDto> getUserDetails(String userId) {
         log.info("Fetching details for user: {}", userId);
 
-        UserEntity user = repository.findActiveUserByUserId(userId)
+        UserEntity user = repository.findByUserIdAndIsActiveTrue(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
         UserResponseDto responseDto = userMapper.entityToResponseDto(user);
@@ -79,7 +79,7 @@ public class UserService {
     public ApiResponse<UserResponseDto> updateUserProfile(UserEntityDto dto, String userId) {
         log.info("Updating profile for user: {}", userId);
 
-        UserEntity existingUser = repository.findActiveUserByUserId(userId)
+        UserEntity existingUser = repository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
         validateUpdateConstraints(dto, existingUser);
@@ -100,10 +100,10 @@ public class UserService {
     public ApiResponse<String> deactivateUser(String userId) {
         log.info("Deactivating user: {}", userId);
 
-        int updatedRows = repository.deactivateUser(userId);
-        if (updatedRows == 0) {
-            throw new ResourceNotFoundException("User", userId);
-        }
+//        int updatedRows = repository.deactivateUser(userId);
+//        if (updatedRows == 0) {
+//            throw new ResourceNotFoundException("User", userId);
+//        }
 
         log.info("User deactivated successfully: {}", userId);
         //return ApiResponse.success(Constants.DELETE_SUCCESS);
@@ -112,7 +112,7 @@ public class UserService {
 
     public ApiResponse<String> deleteUser(String userId) {
         log.info("Permanently deleting user: {}", userId);
-        UserEntity user = repository.findActiveUserByUserId(userId)
+        UserEntity user = repository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
         repository.deleteUser(userId);

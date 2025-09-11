@@ -13,23 +13,22 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long>{
 
+    // Spring Data automatically implements these derived query methods
     boolean existsByPhone(String phone);
-
     boolean existsByEmail(String email);
-
     boolean existsByUserId(String userId);
 
-//    Optional<UserEntity> findByUserId(String userId);
-//
-//    Optional<UserEntity> findByPhone(String phone);
-//
-//    Optional<UserEntity> findByEmail(String email);
+//    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId")
+//    Optional<UserEntity> findUserByUserId(@Param("userId") String userId);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId")
-    Optional<UserEntity> findUserByUserId(@Param("userId") String userId);
+    // prioritizing derived queries unless a custom JPQL is required.
+    Optional<UserEntity> findByUserId(@Param("userId") String userId);
 
-    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId AND u.isActive = true")
-    Optional<UserEntity> findActiveUserByUserId(@Param("userId") String userId);
+//    @Query("SELECT u FROM UserEntity u WHERE u.userId = :userId AND u.isActive = true")
+//    Optional<UserEntity> findActiveUserByUserId(@Param("userId") String userId);
+
+    // prioritizing derived queries unless a custom JPQL is required.
+    Optional<UserEntity> findByUserIdAndIsActiveTrue(@Param("userId") String userId);
 
     @Modifying
     @Query("UPDATE UserEntity u SET u.isActive = true WHERE u.userId = :userId")

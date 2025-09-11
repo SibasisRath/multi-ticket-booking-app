@@ -6,7 +6,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: update # This is for local. for production I will change it to validate or use flyway/liquebase
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     #    url: ${JDBC_URL:jdbc:mariadb://multi-ticket-booking.cvogtr4zthsb.us-east-1.rds.amazonaws.com:3306/userinfo}
@@ -44,7 +44,9 @@ logging:
     name: logs/userservice.log
 
 management:
+  security:
+    enabled : true
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "health, info"
